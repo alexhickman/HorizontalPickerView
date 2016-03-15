@@ -1,14 +1,14 @@
 //
-//  ViewController.m
+//  TableViewController.m
 //  HorizontalPickerView
 //
 //  Created by Hickman on 3/14/16.
 //  Copyright © 2016 Hickman. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "TableViewController.h"
 
-@interface ViewController ()
+@interface TableViewController ()
 {
     NSArray *pickerViewArray;
     NSMutableArray *pickerDataTen;
@@ -16,9 +16,10 @@
 
 @end
 
-@implementation ViewController
+@implementation TableViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithRed:151.0/255 green:80.0/255 blue:8.0/255 alpha:1.0f];
 
@@ -26,17 +27,50 @@
     pickerDataTen = [[NSMutableArray alloc]init];
     pickerDataTen = [self makeArrayOfStringsTo:10];
     [pickerDataTen addObject:keypad];
+
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 2;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *cellIdentifier = @"testCell";
+    testTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    if (!cell)
+    {
+        [tableView registerNib:[UINib nibWithNibName:@"testTableViewCell" bundle:nil] forCellReuseIdentifier:@"testCell"];
+        cell = [tableView dequeueReusableCellWithIdentifier:@"testCell"];
+    }
     
-//    self.myPickerView.frame = CGRectZero;
-    self.myPickerView.frame = CGRectMake(0, 0, 100, 300);
-    self.myPickerView.delegate = self;
-    self.myPickerView.showsSelectionIndicator = NO;
-    self.myPickerView.backgroundColor = [UIColor clearColor];
+    cell.pickerView.frame = CGRectMake(0, 0, 100, 200);
+    cell.pickerView.delegate = self;
+    cell.pickerView.dataSource = self;
+    cell.pickerView.showsSelectionIndicator = NO;
+    cell.pickerView.backgroundColor = [UIColor clearColor];
+    cell.pickerView.center = CGPointMake(cell.frame.size.width*0.75f, cell.frame.size.height/2);
     CGAffineTransform rotate = CGAffineTransformMakeRotation(-3.14/2);
     rotate = CGAffineTransformScale(rotate, 0.25, 2.0);
-    [self.myPickerView setTransform:rotate];
-    [self.myPickerView selectRow:[pickerDataTen count] inComponent:0 animated:NO];
+    [cell.pickerView setTransform:rotate];
+    cell.pickerView.center = CGPointMake(cell.frame.size.width - (cell.pickerView.frame.size.width/2), cell.frame.size.height/2);
+    [cell.pickerView selectRow:[pickerDataTen count] inComponent:0 animated:NO];
+    cell.backgroundColor = [UIColor colorWithRed:151.0/255 green:80.0/255 blue:8.0/255 alpha:1.0f];
+
+
+    cell.labelName.text = @"woot";
     
+    return cell;
 }
 
 -(NSMutableArray *)makeArrayOfStringsTo:(int)number
@@ -69,16 +103,18 @@
     }
     else
     {
-        CGRect rect = CGRectMake(0, 0, 30, 30);
+        CGRect rect = CGRectMake(0, 0, 50, 50);
         UILabel *label = [[UILabel alloc]initWithFrame:rect];
         CGAffineTransform rotate = CGAffineTransformMakeRotation(3.14/2);
         rotate = CGAffineTransformScale(rotate, 0.25, 2.0);
         [label setTransform:rotate];
         label.text = [pickerDataTen objectAtIndex:(row % [pickerDataTen count])];
-        label.font = [UIFont systemFontOfSize:25.0];
+        label.font = [UIFont systemFontOfSize:35.0];
         label.textAlignment = 1;
         label.textColor = [UIColor yellowColor];
-        label.backgroundColor = [UIColor clearColor];
+//        label.backgroundColor = [UIColor clearColor];
+        label.backgroundColor = [UIColor colorWithRed:151.0/255 green:80.0/255 blue:8.0/255 alpha:1.0f];
+
         label.clipsToBounds = YES;
         return label;
     }
